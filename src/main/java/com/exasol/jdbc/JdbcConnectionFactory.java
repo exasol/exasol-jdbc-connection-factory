@@ -21,7 +21,10 @@ public class JdbcConnectionFactory {
     // maximum number of retries for interactive passwords
     private static final int MAX_PASSWORD_ATTEMPTS = 3;
 
-
+    // Name of client; set through setClientData()
+    private static String m_clientName = "jdbcFactory";
+    // Version of client; set through setClientData()
+    private static String m_clientVersion = "1.1-SNAPSHOT";
 
 /**
  * Method that will use 'best available' way to get a password from interactive user input
@@ -112,10 +115,12 @@ public static Connection getConnection( String connectionString, String userName
 
 
     return DriverManager.getConnection(
-            // TODO: configurable client name
-            connectionString + ";clientname=MetaDump",
-            userName,
-            password
+            String.format(
+                    "%s;clientname=%s;clientversion=%s"
+                    , m_clientName, m_clientVersion
+            )
+            , userName
+            , password
     );
 }
 
@@ -161,6 +166,16 @@ public static Connection getConnection() throws SQLException {
     return getConnection( null, null, null );
 }
 
+/**
+ * Set client information to be passed to the database.
+ *
+ * @param clientName Name of the client application
+ * @param clientVersion Version (number) of the client
+ */
+public static void setClientData( String clientName, String clientVersion ) {
+    m_clientName = clientName;
+    m_clientVersion = clientVersion;
+}
 
 // end of class
 }
