@@ -35,8 +35,6 @@ private final Connection m_connection;
 private OperationMode m_operationMode;
 private ErrorMode m_errorMode;
 
-private final ComparableVersion m_dbVersion;
-
 public ManagedConnection( final Connection p_connection ) throws SQLException {
     m_connection = p_connection;
     m_operationMode = OperationMode.OM_NORMAL;
@@ -75,16 +73,26 @@ public void setErrorMode( ErrorMode errorMode ) {
 
 
 /**
- * Statement interfaces
+ * Closure interface for auto-close of ResultSet and Statement.
+ *
+ * @param sqlText statement text (SELECT) to be executed.
+ * @param closure The given closure will be called once per row in the ResultSet; its single argument is the result set.
+ *                While it is not forbidden for the closure to change the result sets cursor (callig next/first, ...)
+ *                , it is not exactly expected.
+ *
+ * @return Number of times the closure was called (should be number of result rows)
  */
-public void eachRow( final String sqlText, FunctionResultSet closure ) throws SQLException {
+public long eachRow( final String sqlText, FunctionResultSet closure ) throws SQLException {
+    long callCounter = 0;
     try (
             Statement stmt = m_connection.createStatement();
             ResultSet rs = stmt.executeQuery( sqlText );
     ) {
         while( rs.next() ) {
+            callCounter++;
             closure.apply( rs );
         }
+        return callCounter;
     }
     catch( SQLException e ) {
         switch( m_errorMode ) {
@@ -92,16 +100,26 @@ public void eachRow( final String sqlText, FunctionResultSet closure ) throws SQ
                 throw e;
             case EM_LOG_CONTINUE:
                 System.out.println( String.format( "Error executing query >>%s<<:\n\t%s", sqlText, e.getMessage() ) );
-                return;
+                return callCounter;
             case EM_IGNORE_CONTINUE:
-                return;
+                return callCounter;
         }
         throw new SQLFeatureNotSupportedException( "Unexpected error mode " + m_operationMode );
     }
 }
 
-
-public void eachRowPrepared( final String sqlText, final Object[] params, FunctionResultSet closure ) throws SQLException {
+/**
+ * Closure interface for auto-close of ResultSet and PreparedStatement.
+ *
+ * @param sqlText statement text (SELECT) to be executed.
+ * @param params Array of parameter values for the statement. Note that this is a one-dimensional array, the statement is executed only once.
+ * @param closure The given closure will be called once per row in the ResultSet; its single argument is the result set.
+ *                While it is not forbidden for the closure to change the result sets cursor (callig next/first, ...)
+ *                , it is not exactly expected.
+ * @return Number of times the closure was called (should be number of result rows)
+ */
+public long eachRowPrepared( final String sqlText, final Object[] params, FunctionResultSet closure ) throws SQLException {
+    long callCounter = 0;
     try (
             PreparedStatement stmt = m_connection.prepareStatement( sqlText );
     ) {
@@ -113,9 +131,11 @@ public void eachRowPrepared( final String sqlText, final Object[] params, Functi
             ResultSet rs = stmt.executeQuery()
         ) {
             while( rs.next() ) {
+                callCounter++;
                 closure.apply( rs );
             }
         }
+        return callCounter;
     }
     catch( SQLException e ) {
         switch( m_errorMode ) {
@@ -123,15 +143,21 @@ public void eachRowPrepared( final String sqlText, final Object[] params, Functi
                 throw e;
             case EM_LOG_CONTINUE:
                 System.out.println( String.format( "Error executing query >>%s<<:\n\t%s", sqlText, e.getMessage() ) );
-                return;
+                return callCounter;
             case EM_IGNORE_CONTINUE:
-                return;
+                return callCounter;
         }
         throw new SQLFeatureNotSupportedException( "Unexpected error mode " + m_operationMode );
     }
 }
 
-
+/**
+ * Execute SQL statement returning a rowcount (basically anything except SELECT).
+ *
+ * @param sqlText statement text to execute
+ * @return Number of rows affected, or -1 on ignored error
+ * @throws SQLException On database error, when not ignored through m_errorMode
+ */
 public long executeUpdate( final String sqlText ) throws SQLException {
     try (
             Statement stmt = m_connection.createStatement();
@@ -162,6 +188,49 @@ public long executeUpdate( final String sqlText ) throws SQLException {
 }
 
 
+/**
+ * Execute SQL prepared statement returning a rowcount (basically anything except SELECT).
+ *
+ * @param sqlText statement text to execute
+ * @param params Array of parameters for the statement. Note that this is a one-dimensional array, the statement is executed only once.
+ * @return Number of rows affected, or -1 on ignored error
+ * @throws SQLException On database error, when not ignored through m_errorMode
+ */
+public long executeUpdatePrepared( final String sqlText, final Object[] params ) throws SQLException {
+    try (
+            PreparedStatement stmt = m_connection.prepareStatement( sqlText );
+    ) {
+        for( int i=0; i<params.length; ++i ) {
+            stmt.setObject( i+1, params[i] );
+        }
+
+        switch( m_operationMode ) {
+            case OM_DRYRUN:
+                System.out.println( "-- DRY_RUN --\n" + sqlText );
+                return 0;
+            case OM_VERBOSE:
+                System.out.println( "-- EXECUTE --\n" + sqlText );
+                // fall-through to execution
+            case OM_NORMAL:
+                return stmt.executeLargeUpdate();
+        }
+        throw new SQLFeatureNotSupportedException( "Unexpected operation mode " + m_operationMode );
+    }
+    catch( SQLException e ) {
+        switch( m_errorMode ) {
+            case EM_THROW:
+                throw e;
+            case EM_LOG_CONTINUE:
+                System.out.println( String.format( "Error executing statement >>%s<<:\n\t%s", sqlText, e.getMessage() ) );
+                return -1;
+            case EM_IGNORE_CONTINUE:
+                return -1;
+        }
+        throw new SQLFeatureNotSupportedException( "Unexpected error mode " + m_operationMode );
+    }
+}
+
+
 @Deprecated
 public Statement createStatement() throws SQLException {
     return m_connection.createStatement();
@@ -172,6 +241,24 @@ public PreparedStatement prepareStatement( final String sqlText ) throws SQLExce
     return m_connection.prepareStatement( sqlText );
 }
 
+
+/**
+ * Set Autocommit mode of Connection
+ *
+ * @param mode true to enable autocommit (== default after connect)
+ */
+public void setAutocommit( boolean mode ) throws SQLException {
+    m_connection.setAutoCommit( mode );
+}
+
+
+
+/**
+ *
+ * Versioning / Feature management
+ *
+ */
+private final ComparableVersion m_dbVersion;
 
 
 public boolean hasFeature( Feature feature ) {
@@ -214,6 +301,7 @@ public static boolean hasFeature( ComparableVersion p_version, Feature p_feature
 public ComparableVersion getVersion() {
     return m_dbVersion;
 }
+
 
 // end of class. Go home.
 }
