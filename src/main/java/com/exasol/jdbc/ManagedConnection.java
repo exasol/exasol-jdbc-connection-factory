@@ -3,7 +3,10 @@ package com.exasol.jdbc;
 import com.exasol.jdbc.functional.FunctionResultSet;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 
+import java.math.BigDecimal;
 import java.sql.*;
+
+import com.exasol.jdbc.AbstractEXAConnection;
 
 public class ManagedConnection implements AutoCloseable {
 
@@ -34,12 +37,19 @@ public enum Feature {
 private final Connection m_connection;
 private OperationMode m_operationMode;
 private ErrorMode m_errorMode;
+private final long m_sessionId;
+
 
 public ManagedConnection( final Connection p_connection ) throws SQLException {
     m_connection = p_connection;
     m_operationMode = OperationMode.OM_NORMAL;
     m_errorMode = ErrorMode.EM_THROW;
     m_dbVersion = new ComparableVersion(  p_connection.getMetaData().getDatabaseProductVersion() );
+    if( p_connection instanceof  AbstractEXAConnection ) {
+        m_sessionId = ((AbstractEXAConnection) m_connection).getSessionID();
+    } else {
+        m_sessionId = -1;
+    }
 }
 
 /**
@@ -71,6 +81,9 @@ public void setErrorMode( ErrorMode errorMode ) {
     this.m_errorMode = errorMode;
 }
 
+public long getSessionId() {
+    return m_sessionId;
+}
 
 /**
  * Closure interface for auto-close of ResultSet and Statement.
@@ -170,7 +183,8 @@ public long executeUpdate( final String sqlText ) throws SQLException {
                 System.out.println( "-- EXECUTE --\n" + sqlText );
                 // fall-through to execution
             case OM_NORMAL:
-                return stmt.executeLargeUpdate( sqlText );
+                // https://www.exasol.com/support/browse/IDEA-426 -- executeLargeUpdate is missing
+                return stmt.executeUpdate( sqlText );
         }
         throw new SQLFeatureNotSupportedException( "Unexpected operation mode " + m_operationMode );
     }
@@ -212,7 +226,8 @@ public long executeUpdatePrepared( final String sqlText, final Object[] params )
                 System.out.println( "-- EXECUTE --\n" + sqlText );
                 // fall-through to execution
             case OM_NORMAL:
-                return stmt.executeLargeUpdate();
+                // https://www.exasol.com/support/browse/IDEA-426 -- executeLargeUpdate is missing
+                return stmt.executeUpdate();
         }
         throw new SQLFeatureNotSupportedException( "Unexpected operation mode " + m_operationMode );
     }

@@ -117,7 +117,9 @@ public static Connection getConnection( String connectionString, String userName
     return DriverManager.getConnection(
             String.format(
                     "%s;clientname=%s;clientversion=%s"
-                    , m_clientName, m_clientVersion
+                    , connectionString
+                    , m_clientName
+                    , m_clientVersion
             )
             , userName
             , password

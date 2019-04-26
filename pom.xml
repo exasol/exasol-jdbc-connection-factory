@@ -6,7 +6,7 @@
 
     <groupId>com.exasol</groupId>
     <artifactId>jdbc-factory</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
 
 
     <name>Jdbc Connection Factory</name>
@@ -35,11 +35,11 @@
     <distributionManagement>
         <repository>
             <id>sandbox-releases</id>
-            <url>http://maven.exasol.com/artifactory/exasol-sandbox-releases</url>
+            <url>https://maven.exasol.com/artifactory/exasol-sandbox-releases</url>
         </repository>
         <snapshotRepository>
             <id>sandbox-snapshots</id>
-            <url>http://maven.exasol.com/artifactory/exasol-sandbox-snapshots</url>
+            <url>https://maven.exasol.com/artifactory/exasol-sandbox-snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 
@@ -50,8 +50,8 @@
             <groupId>com.exasol</groupId>
             <artifactId>exasol-jdbc</artifactId>
             <!-- newer drivers have insane windows / java 9 dependencies -->
-            <version>6.1.0</version>
-            <scope>runtime</scope>
+            <version>6.1.2</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- Maven Versioning Stuff -->
