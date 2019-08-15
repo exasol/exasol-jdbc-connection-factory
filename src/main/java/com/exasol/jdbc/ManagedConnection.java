@@ -3,10 +3,7 @@ package com.exasol.jdbc;
 import com.exasol.jdbc.functional.FunctionResultSet;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 
-import java.math.BigDecimal;
 import java.sql.*;
-
-import com.exasol.jdbc.AbstractEXAConnection;
 
 public class ManagedConnection implements AutoCloseable {
 
