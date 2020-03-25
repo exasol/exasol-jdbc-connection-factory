@@ -1,24 +1,12 @@
 package com.exasol.jdbc;
 
+import com.exasol.jdbc.functional.FunctionPreparedStatement;
 import com.exasol.jdbc.functional.FunctionResultSet;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 
 import java.sql.*;
 
 public class ManagedConnection implements AutoCloseable {
-
-public enum OperationMode {
-    OM_NORMAL // execute statements
-    , OM_VERBOSE // execute and print statements
-    , OM_DRYRUN // print statements to screen
-}
-
-public enum ErrorMode {
-    EM_LOG_CONTINUE // print errors but continue
-    , EM_IGNORE_CONTINUE // ignore errors and go on
-    , EM_THROW // throw errors
-}
-
 
 
 public enum Feature {
@@ -32,15 +20,11 @@ public enum Feature {
 
 
 private final Connection m_connection;
-private OperationMode m_operationMode;
-private ErrorMode m_errorMode;
 private final long m_sessionId;
 
 
 public ManagedConnection( final Connection p_connection ) throws SQLException {
     m_connection = p_connection;
-    m_operationMode = OperationMode.OM_NORMAL;
-    m_errorMode = ErrorMode.EM_THROW;
     m_dbVersion = new ComparableVersion(  p_connection.getMetaData().getDatabaseProductVersion() );
     if( p_connection instanceof  AbstractEXAConnection ) {
         m_sessionId = ((AbstractEXAConnection) m_connection).getSessionID();
@@ -50,32 +34,19 @@ public ManagedConnection( final Connection p_connection ) throws SQLException {
 }
 
 /**
- * interface Autocloseable
+ * interface AutoCloseable
  */
 @Override
-public void close() throws SQLException {
-    if( null!=m_connection && !m_connection.isClosed() ) {
-        m_connection.close();
+public void close() {
+    if( null!=m_connection ) {
+        try {
+            if( !m_connection.isClosed() ) {
+                m_connection.close();
+            }
+        }
+        catch( SQLException ignored ) {
+        }
     }
-}
-
-/**
- * Getter and Setter
- */
-public OperationMode getOperationMode() {
-    return m_operationMode;
-}
-
-public void setOperationMode( OperationMode o ) {
-    m_operationMode = o;
-}
-
-public ErrorMode getErrorMode() {
-    return m_errorMode;
-}
-
-public void setErrorMode( ErrorMode errorMode ) {
-    this.m_errorMode = errorMode;
 }
 
 public long getSessionId() {
@@ -96,25 +67,13 @@ public long eachRow( final String sqlText, FunctionResultSet closure ) throws SQ
     long callCounter = 0;
     try (
             Statement stmt = m_connection.createStatement();
-            ResultSet rs = stmt.executeQuery( sqlText );
+            ResultSet rs = stmt.executeQuery( sqlText )
     ) {
         while( rs.next() ) {
             callCounter++;
             closure.apply( rs );
         }
         return callCounter;
-    }
-    catch( SQLException e ) {
-        switch( m_errorMode ) {
-            case EM_THROW:
-                throw e;
-            case EM_LOG_CONTINUE:
-                System.out.println( String.format( "Error executing query >>%s<<:\n\t%s", sqlText, e.getMessage() ) );
-                return callCounter;
-            case EM_IGNORE_CONTINUE:
-                return callCounter;
-        }
-        throw new SQLFeatureNotSupportedException( "Unexpected error mode " + m_operationMode );
     }
 }
 
@@ -131,7 +90,7 @@ public long eachRow( final String sqlText, FunctionResultSet closure ) throws SQ
 public long eachRowPrepared( final String sqlText, final Object[] params, FunctionResultSet closure ) throws SQLException {
     long callCounter = 0;
     try (
-            PreparedStatement stmt = m_connection.prepareStatement( sqlText );
+            PreparedStatement stmt = m_connection.prepareStatement( sqlText )
     ) {
         for( int i=0; i<params.length; ++i ) {
             stmt.setObject( i+1, params[i] );
@@ -147,18 +106,6 @@ public long eachRowPrepared( final String sqlText, final Object[] params, Functi
         }
         return callCounter;
     }
-    catch( SQLException e ) {
-        switch( m_errorMode ) {
-            case EM_THROW:
-                throw e;
-            case EM_LOG_CONTINUE:
-                System.out.println( String.format( "Error executing query >>%s<<:\n\t%s", sqlText, e.getMessage() ) );
-                return callCounter;
-            case EM_IGNORE_CONTINUE:
-                return callCounter;
-        }
-        throw new SQLFeatureNotSupportedException( "Unexpected error mode " + m_operationMode );
-    }
 }
 
 /**
@@ -170,31 +117,10 @@ public long eachRowPrepared( final String sqlText, final Object[] params, Functi
  */
 public long executeUpdate( final String sqlText ) throws SQLException {
     try (
-            Statement stmt = m_connection.createStatement();
+            Statement stmt = m_connection.createStatement()
     ) {
-        switch( m_operationMode ) {
-            case OM_DRYRUN:
-                System.out.println( "-- DRY_RUN --\n" + sqlText );
-                return 0;
-            case OM_VERBOSE:
-                System.out.println( "-- EXECUTE --\n" + sqlText );
-                // fall-through to execution
-            case OM_NORMAL:
-                // https://www.exasol.com/support/browse/IDEA-426 -- executeLargeUpdate is missing
-                return stmt.executeUpdate( sqlText );
-        }
-        throw new SQLFeatureNotSupportedException( "Unexpected operation mode " + m_operationMode );
-    }
-    catch( SQLException e ) {
-        switch( m_errorMode ) {
-            case EM_THROW:
-                throw e;
-            case EM_LOG_CONTINUE:
-                System.out.println( String.format( "Error executing statement >>%s<<:\n\t%s", sqlText, e.getMessage() ) );
-            case EM_IGNORE_CONTINUE:
-                return -1;
-        }
-        throw new SQLFeatureNotSupportedException( "Unexpected error mode " + m_operationMode );
+            // https://www.exasol.com/support/browse/IDEA-426 -- executeLargeUpdate is missing
+            return stmt.executeUpdate( sqlText );
     }
 }
 
@@ -209,36 +135,13 @@ public long executeUpdate( final String sqlText ) throws SQLException {
  */
 public long executeUpdatePrepared( final String sqlText, final Object[] params ) throws SQLException {
     try (
-            PreparedStatement stmt = m_connection.prepareStatement( sqlText );
+            PreparedStatement stmt = m_connection.prepareStatement( sqlText )
     ) {
         for( int i=0; i<params.length; ++i ) {
             stmt.setObject( i+1, params[i] );
         }
-
-        switch( m_operationMode ) {
-            case OM_DRYRUN:
-                System.out.println( "-- DRY_RUN --\n" + sqlText );
-                return 0;
-            case OM_VERBOSE:
-                System.out.println( "-- EXECUTE --\n" + sqlText );
-                // fall-through to execution
-            case OM_NORMAL:
-                // https://www.exasol.com/support/browse/IDEA-426 -- executeLargeUpdate is missing
-                return stmt.executeUpdate();
-        }
-        throw new SQLFeatureNotSupportedException( "Unexpected operation mode " + m_operationMode );
-    }
-    catch( SQLException e ) {
-        switch( m_errorMode ) {
-            case EM_THROW:
-                throw e;
-            case EM_LOG_CONTINUE:
-                System.out.println( String.format( "Error executing statement >>%s<<:\n\t%s", sqlText, e.getMessage() ) );
-                return -1;
-            case EM_IGNORE_CONTINUE:
-                return -1;
-        }
-        throw new SQLFeatureNotSupportedException( "Unexpected error mode " + m_operationMode );
+        // https://www.exasol.com/support/browse/IDEA-426 -- executeLargeUpdate is missing
+        return stmt.executeUpdate();
     }
 }
 
@@ -253,6 +156,25 @@ public PreparedStatement prepareStatement( final String sqlText ) throws SQLExce
     return m_connection.prepareStatement( sqlText );
 }
 
+/**
+ * Prepare the given statement text and call the closure with the resulting PreparedStatement.
+ * <p>
+ *     The statement is automatically closed when #closure is done.
+ *     Note that with Exasol, PreparedStatement.close() is actually executing some stuff and may even throw exceptions!
+ * </p>
+ *
+ * @param sqlText The SQL text to prepare. Use question marks '?' for parameter placeholders
+ * @param closure The user code operating on the prepared Statement
+ * @return whatever the closure returned
+ * @throws SQLException When either closure or PreparedStatement.close throws
+ */
+public long withPrepare( final String sqlText, FunctionPreparedStatement closure ) throws SQLException {
+    try (
+            PreparedStatement stmt = m_connection.prepareStatement( sqlText )
+    ) {
+        return closure.apply( stmt );
+    }
+}
 
 /**
  * Set Autocommit mode of Connection
