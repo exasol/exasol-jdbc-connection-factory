@@ -9,6 +9,6 @@ import java.sql.SQLException;
 @FunctionalInterface
 public interface FunctionPreparedStatement {
 
-    long apply( PreparedStatement preparedStatement ) throws SQLException;
+long apply( PreparedStatement preparedStatement ) throws SQLException;
 
 }

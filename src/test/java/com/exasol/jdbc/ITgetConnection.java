@@ -6,9 +6,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,43 +27,90 @@ void stopContainer() {
 
 @Test
 void testLoginGood() {
-    Connection c = assertDoesNotThrow( () -> JdbcConnectionFactory.getConnection( database.getJdbcUrl(), "sys", "exasol") );
+    Connection c = assertDoesNotThrow( () -> JdbcConnectionFactory
+            .getConnection( database.getJdbcUrl(), "sys", "exasol" ) );
     assertDoesNotThrow( c::close );
 }
 
 @Test
 void testLoginBad() {
-    assertThrows( SQLException.class, () -> JdbcConnectionFactory.getConnection( database.getJdbcUrl(), "sys", "exa sol") );
+    assertThrows( SQLException.class, () -> JdbcConnectionFactory
+            .getConnection( database.getJdbcUrl(), "sys", "exa sol" ) );
 }
 
 @Test
 void testLoginNonDefault() {
     assertDoesNotThrow( () -> {
-        try (
-                Connection c = JdbcConnectionFactory.getConnection( database.getJdbcUrl(), "sys", "exasol");
-                Statement s = c.createStatement()
-        ) {
-            s.executeUpdate( "create user X identified by \"abC\"" );
-            // done with autocommit
+                try (
+                        Connection c = JdbcConnectionFactory.getConnection( database.getJdbcUrl(), "sys", "exasol" );
+                        Statement s = c.createStatement()
+                ) {
+                    s.executeUpdate( "create user X identified by \"abC\"" );
+                    // done with autocommit
 
-            LoginRefused err = assertThrows(LoginRefused.class, () -> JdbcConnectionFactory.getConnection( database.getJdbcUrl(), "x", "abC") );
-            assertTrue( err.getMessage().contains( "insufficient privileges: CREATE SESSION" ) );
-        }
-    }
+                    SQLInvalidAuthorizationSpecException err = assertThrows( SQLInvalidAuthorizationSpecException.class, () -> JdbcConnectionFactory
+                            .getConnection( database.getJdbcUrl(), "x", "abC" ) );
+                    assertTrue( err.getMessage().contains( "insufficient privileges: CREATE SESSION" ) );
+                }
+            }
     );
 }
 
 @Test
 void testBrokenURL() {
-    SQLException err = assertThrows(SQLException.class, () -> JdbcConnectionFactory.getConnection( "https://www.exasol.com", "sys", "exasol" ) );
-    assertTrue( err.getMessage().startsWith( "No suitable driver found" ));
+    SQLException err = assertThrows( SQLException.class, () -> JdbcConnectionFactory
+            .getConnection( "https://www.exasol.com", "sys", "exasol" ) );
+    assertTrue( err.getMessage().startsWith( "No suitable driver found" ) );
 }
 
 @Test
 void testNoHost() {
-    ConnectFailed err = assertThrows(ConnectFailed.class, () -> JdbcConnectionFactory.getConnection( "jdbc:exa:www.exasol.com:8563", "sys", "exasol" ) );
+    ConnectFailed err = assertThrows( ConnectFailed.class, () -> JdbcConnectionFactory
+            .getConnection( "jdbc:exa:www.exasol.com:8563", "sys", "exasol" ) );
     assertEquals( "connect timed out", err.getMessage() );
 }
 
+@Test
+void testDefaultClient() {
+    String name = JdbcConnectionFactory.getClientName();
+    assertNotNull( name );
+    System.out.println( name );
+
+
+    String version = JdbcConnectionFactory.getClientVersion();
+    assertNotNull( version );
+    System.out.println( version );
+
+    try (
+            Connection c = JdbcConnectionFactory.getConnection( database.getJdbcUrl(), "sys", "exasol" );
+            Statement s = c.createStatement();
+            ResultSet rs = s.executeQuery( "select * from exa_user_sessions where session_id = current_session" )
+    ) {
+        assertTrue( rs.next() );
+        assertEquals( name + " " + version, rs.getString( "CLIENT" ) );
+    }
+    catch( SQLException exception ) {
+        fail( exception );
+    }
+}
+
+@Test
+void testClientName() {
+    JdbcConnectionFactory.setClientData( "testclient", "0.0.0.1" );
+    assertEquals( "testclient", JdbcConnectionFactory.getClientName() );
+    assertEquals( "0.0.0.1", JdbcConnectionFactory.getClientVersion() );
+
+    try (
+            Connection c = JdbcConnectionFactory.getConnection( database.getJdbcUrl(), "sys", "exasol" );
+            Statement s = c.createStatement();
+            ResultSet rs = s.executeQuery( "select * from exa_user_sessions where session_id = current_session" )
+    ) {
+        assertTrue( rs.next() );
+        assertEquals( "testclient 0.0.0.1", rs.getString( "CLIENT" ) );
+    }
+    catch( SQLException exception ) {
+        fail( exception );
+    }
+}
 
 }

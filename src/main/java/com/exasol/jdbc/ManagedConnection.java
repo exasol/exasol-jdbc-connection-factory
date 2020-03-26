@@ -18,15 +18,24 @@ public enum Feature {
     , F_IMPERSONATION // user impersonation
 }
 
-
+// the JDBC connection to be managed
 private final Connection m_connection;
+// session ID of Exasol connection
 private final long m_sessionId;
 
-
+/**
+ * Create a new ManagedConnection on a given Connection.
+ * <p>
+ * If the given Connection is to Exasol, it will automatically retrieve the current SessionId
+ * </p>
+ *
+ * @param p_connection Existing Connection; preferably to Exasol
+ * @throws SQLException if anything goes wrong
+ */
 public ManagedConnection( final Connection p_connection ) throws SQLException {
     m_connection = p_connection;
-    m_dbVersion = new ComparableVersion(  p_connection.getMetaData().getDatabaseProductVersion() );
-    if( p_connection instanceof  AbstractEXAConnection ) {
+    m_dbVersion = new ComparableVersion( p_connection.getMetaData().getDatabaseProductVersion() );
+    if( p_connection instanceof AbstractEXAConnection ) {
         m_sessionId = ((AbstractEXAConnection) m_connection).getSessionID();
     } else {
         m_sessionId = -1;
@@ -38,7 +47,7 @@ public ManagedConnection( final Connection p_connection ) throws SQLException {
  */
 @Override
 public void close() {
-    if( null!=m_connection ) {
+    if( null != m_connection ) {
         try {
             if( !m_connection.isClosed() ) {
                 m_connection.close();
@@ -49,6 +58,11 @@ public void close() {
     }
 }
 
+/**
+ * Return the session Id of the Connection.
+ *
+ * @return -1 if the Connection is not to Exasol
+ */
 public long getSessionId() {
     return m_sessionId;
 }
@@ -58,9 +72,8 @@ public long getSessionId() {
  *
  * @param sqlText statement text (SELECT) to be executed.
  * @param closure The given closure will be called once per row in the ResultSet; its single argument is the result set.
- *                While it is not forbidden for the closure to change the result sets cursor (callig next/first, ...)
+ *                While it is not forbidden for the closure to change the result sets cursor (calling next/first, ...)
  *                , it is not exactly expected.
- *
  * @return Number of times the closure was called (should be number of result rows)
  */
 public long eachRow( final String sqlText, FunctionResultSet closure ) throws SQLException {
@@ -69,7 +82,7 @@ public long eachRow( final String sqlText, FunctionResultSet closure ) throws SQ
             Statement stmt = m_connection.createStatement();
             ResultSet rs = stmt.executeQuery( sqlText )
     ) {
-        while( rs.next() ) {
+        while (rs.next()) {
             callCounter++;
             closure.apply( rs );
         }
@@ -81,9 +94,9 @@ public long eachRow( final String sqlText, FunctionResultSet closure ) throws SQ
  * Closure interface for auto-close of ResultSet and PreparedStatement.
  *
  * @param sqlText statement text (SELECT) to be executed.
- * @param params Array of parameter values for the statement. Note that this is a one-dimensional array, the statement is executed only once.
+ * @param params  Array of parameter values for the statement. Note that this is a one-dimensional array, the statement is executed only once.
  * @param closure The given closure will be called once per row in the ResultSet; its single argument is the result set.
- *                While it is not forbidden for the closure to change the result sets cursor (callig next/first, ...)
+ *                While it is not forbidden for the closure to change the result set cursor (calling next/first, ...)
  *                , it is not exactly expected.
  * @return Number of times the closure was called (should be number of result rows)
  */
@@ -92,14 +105,14 @@ public long eachRowPrepared( final String sqlText, final Object[] params, Functi
     try (
             PreparedStatement stmt = m_connection.prepareStatement( sqlText )
     ) {
-        for( int i=0; i<params.length; ++i ) {
-            stmt.setObject( i+1, params[i] );
+        for (int i = 0; i < params.length; ++i) {
+            stmt.setObject( i + 1, params[i] );
         }
 
         try (
-            ResultSet rs = stmt.executeQuery()
+                ResultSet rs = stmt.executeQuery()
         ) {
-            while( rs.next() ) {
+            while (rs.next()) {
                 callCounter++;
                 closure.apply( rs );
             }
@@ -119,8 +132,8 @@ public long executeUpdate( final String sqlText ) throws SQLException {
     try (
             Statement stmt = m_connection.createStatement()
     ) {
-            // https://www.exasol.com/support/browse/IDEA-426 -- executeLargeUpdate is missing
-            return stmt.executeUpdate( sqlText );
+        // https://www.exasol.com/support/browse/IDEA-426 -- executeLargeUpdate is missing
+        return stmt.executeUpdate( sqlText );
     }
 }
 
@@ -129,7 +142,7 @@ public long executeUpdate( final String sqlText ) throws SQLException {
  * Execute SQL prepared statement returning a rowcount (basically anything except SELECT).
  *
  * @param sqlText statement text to execute
- * @param params Array of parameters for the statement. Note that this is a one-dimensional array, the statement is executed only once.
+ * @param params  Array of parameters for the statement. Note that this is a one-dimensional array, the statement is executed only once.
  * @return Number of rows affected, or -1 on ignored error
  * @throws SQLException On database error, when not ignored through m_errorMode
  */
@@ -137,8 +150,8 @@ public long executeUpdatePrepared( final String sqlText, final Object[] params )
     try (
             PreparedStatement stmt = m_connection.prepareStatement( sqlText )
     ) {
-        for( int i=0; i<params.length; ++i ) {
-            stmt.setObject( i+1, params[i] );
+        for (int i = 0; i < params.length; ++i) {
+            stmt.setObject( i + 1, params[i] );
         }
         // https://www.exasol.com/support/browse/IDEA-426 -- executeLargeUpdate is missing
         return stmt.executeUpdate();
@@ -146,11 +159,30 @@ public long executeUpdatePrepared( final String sqlText, final Object[] params )
 }
 
 
+/**
+ * Get a raw Statement from the Connection.
+ * <p>
+ * Note that you will have to take care of closing the Statement yourself!
+ * </p>
+ *
+ * @return raw Statement for the connected Connection
+ * @throws SQLException If something goes wrong
+ * @deprecated If you ever need this method, please create a feature request to implement the missing managed part.
+ */
 @Deprecated
 public Statement createStatement() throws SQLException {
     return m_connection.createStatement();
 }
 
+/**
+ * Create a PreparedStatement on the Connection.
+ *
+ * @param sqlText SQL text for the PreparedStatement. use '? for parameter placeholders.
+ * @return the prepared Statement
+ * @throws SQLException If the prepare fails for some reason
+ * @deprecated This method is not in-line with the whole "managed autocloseable" approach.
+ * Use {@link #withPrepare(String, FunctionPreparedStatement)} instead!
+ */
 @Deprecated
 public PreparedStatement prepareStatement( final String sqlText ) throws SQLException {
     return m_connection.prepareStatement( sqlText );
@@ -159,8 +191,8 @@ public PreparedStatement prepareStatement( final String sqlText ) throws SQLExce
 /**
  * Prepare the given statement text and call the closure with the resulting PreparedStatement.
  * <p>
- *     The statement is automatically closed when #closure is done.
- *     Note that with Exasol, PreparedStatement.close() is actually executing some stuff and may even throw exceptions!
+ * The statement is automatically closed when #closure is done.
+ * Note that with Exasol, PreparedStatement.close() is actually executing some stuff and may even throw exceptions!
  * </p>
  *
  * @param sqlText The SQL text to prepare. Use question marks '?' for parameter placeholders
@@ -186,20 +218,33 @@ public void setAutocommit( boolean mode ) throws SQLException {
 }
 
 
-
 /**
- *
- * Versioning / Feature management
- *
+ * versioning / feature management
  */
+// the database version retrieved in constructor
 private final ComparableVersion m_dbVersion;
 
-
+/**
+ * Check if the current database version supports the given feature.
+ * <p>
+ * Note that the check is based on database version only, it can not test for specific database settings!
+ * </p>
+ *
+ * @see #hasFeature(ComparableVersion, Feature)
+ */
 public boolean hasFeature( Feature feature ) {
-    return hasFeature(m_dbVersion, feature);
+    return hasFeature( m_dbVersion, feature );
 }
 
-
+/**
+ * Check if the given Exasol version does support the given feature
+ * <p>
+ * If the given version is null or empty, this returns <b>true </b>
+ * </p>
+ *
+ * @param p_version Exasol Version string, eg. "6.0.8" or "6.1.rc1"
+ * @see #hasFeature(ComparableVersion, Feature)
+ */
 public static boolean hasFeature( String p_version, Feature p_feature ) {
     if( null == p_version || p_version.isEmpty() ) {
         // unspecified version --> all features
@@ -210,13 +255,20 @@ public static boolean hasFeature( String p_version, Feature p_feature ) {
 
 
 /**
- * Relevant versions for feature comparisons
+ * Relevant fixed versions for feature comparisons
  */
 private static final ComparableVersion VERSION_6_0_8 = new ComparableVersion( "6.0.8" );
 private static final ComparableVersion VERSION_6_1_RC1 = new ComparableVersion( "6.1.rc1" );
 
+/**
+ * Check if the given Exasol database version supports the given feature.
+ *
+ * @param p_version Exasol version number, like "6.1.0" or "7.0.alpha-1"
+ * @param p_feature The Feature to check for
+ * @return True if the given version does support the given feature.
+ */
 public static boolean hasFeature( ComparableVersion p_version, Feature p_feature ) {
-    switch( p_feature ) {
+    switch (p_feature) {
         case F_KERBEROS_AUTH:
             return 0 <= p_version.compareTo( VERSION_6_0_8 );
         case F_PARTITIONS:
@@ -228,10 +280,13 @@ public static boolean hasFeature( ComparableVersion p_version, Feature p_feature
     }
 
     // should never happen: switch/case must be feature-complete!
-    assert(false);
+    assert (false);
     return false;
 }
 
+/**
+ * Return the version of the Exasol database behind this Connection
+ */
 public ComparableVersion getVersion() {
     return m_dbVersion;
 }
