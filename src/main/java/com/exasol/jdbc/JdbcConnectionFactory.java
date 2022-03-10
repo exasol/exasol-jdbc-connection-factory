@@ -91,7 +91,6 @@ private static void readDefaults() {
  * @throws IOException on error
  */
 public static String readPassword( String prompt ) throws IOException {
-    String pwd = null;
     try {
         if( !GraphicsEnvironment.isHeadless() ) {
             System.out.println( "System is not headless... could use popup window for password entry" );
