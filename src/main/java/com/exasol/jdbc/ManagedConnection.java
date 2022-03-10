@@ -16,6 +16,8 @@ public enum Feature {
     , F_SCHEMA_QUOTA // raw quota on schema level
     , F_PASSWORD_POLICIES // password policies and expiry
     , F_IMPERSONATION // user impersonation
+    , F_SNAPSHOT_MODE // EXASOL-2901: System Table Snapshot Mode
+    , F_TLS_FINGERPRINT // EXASOL-2936: Fingerprint in DRIVERS
 }
 
 // the JDBC connection to be managed
@@ -259,6 +261,7 @@ public static boolean hasFeature( String p_version, Feature p_feature ) {
  */
 private static final ComparableVersion VERSION_6_0_8 = new ComparableVersion( "6.0.8" );
 private static final ComparableVersion VERSION_6_1_RC1 = new ComparableVersion( "6.1.rc1" );
+private static final ComparableVersion VERSION_7_1_0 = new ComparableVersion( "7.1.0" );
 
 /**
  * Check if the given Exasol database version supports the given feature.
@@ -277,6 +280,9 @@ public static boolean hasFeature( ComparableVersion p_version, Feature p_feature
         case F_PASSWORD_POLICIES:
         case F_IMPERSONATION:
             return 0 <= p_version.compareTo( VERSION_6_1_RC1 );
+        case F_SNAPSHOT_MODE:
+        case F_TLS_FINGERPRINT:
+            return 0 <= p_version.compareTo( VERSION_7_1_0 );
     }
 
     // should never happen: switch/case must be feature-complete!

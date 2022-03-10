@@ -60,6 +60,18 @@ void test700() throws Exception {
 
     assertTrue( mc.hasFeature( ManagedConnection.Feature.F_KERBEROS_AUTH ) );
     assertTrue( mc.hasFeature( ManagedConnection.Feature.F_IMPERSONATION ) );
+    assertFalse( mc.hasFeature( ManagedConnection.Feature.F_SNAPSHOT_MODE ) );
+}
+
+@Test
+void test710() throws Exception {
+    doReturn( metadataMock ).when( this.connectionMock ).getMetaData();
+    doReturn( "7.1.0" ).when( this.metadataMock ).getDatabaseProductVersion();
+    ManagedConnection mc = assertDoesNotThrow( () -> new ManagedConnection( this.connectionMock ) );
+
+    assertTrue( mc.hasFeature( ManagedConnection.Feature.F_KERBEROS_AUTH ) );
+    assertTrue( mc.hasFeature( ManagedConnection.Feature.F_IMPERSONATION ) );
+    assertTrue( mc.hasFeature( ManagedConnection.Feature.F_SNAPSHOT_MODE ) );
 }
 
 
