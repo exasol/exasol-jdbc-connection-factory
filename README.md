@@ -39,5 +39,6 @@ The prepackaged artifact is available on Maven Central.
 
 # Information for Developers
 
+* [Developers Guide](doc/developers_guide/developers_guide.md)
 * [Dependencies](dependencies.md)
 * [Changelog](doc/changes/changelog.md)
