@@ -32,32 +32,10 @@ This is a wrapper around a regular JDBC Connection, implementing the **AutoClosa
 Although not Exasol-specific in its usage, it also offers information on specific Exasol features and the release they came with. This can be used to customize generated Sql based on the connected database.
 
 ## Dependencies
-The project depends on, and includes the *Exasol JDBC Driver 6.1.0*.
+The project depends on, and includes the *Exasol JDBC Driver 7.1.16*.
 
 # Availability
-The prepackaged artifact is available on the internal Exasol Artifactory; just add the following parts to your **pom.xml**
-
-```
-    <repositories>
-        <repository>
-            <id>sandbox-releases</id>
-            <url>http://maven.exasol.com/artifactory/exasol-sandbox-releases</url>
-        </repository>
-        <repository>
-            <id>sandbox-snapshots</id>
-            <url>http://maven.exasol.com/artifactory/exasol-sandbox-snapshots</url>
-        </repository>
-    </repositories>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.exasol</groupId>
-            <artifactId>jdbc-factory</artifactId>
-            <scope>compile</scope>
-            <version>1.0</version>
-        </dependency>
-    </dependencies>
-```
+The prepackaged artifact is available on Maven Central.
 
 # Information for Developers
 
