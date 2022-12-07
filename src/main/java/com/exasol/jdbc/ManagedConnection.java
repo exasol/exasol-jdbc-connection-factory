@@ -16,17 +16,17 @@ public class ManagedConnection implements AutoCloseable {
  * Features supported by an Exasol database.
  */
 public enum Feature {
-    /** table partitions */
+    /** Table partitions */
     F_PARTITIONS,
-    /** user authentication through Kerberos */
+    /** User authentication through Kerberos */
     F_KERBEROS_AUTH,
-    /** flexible priority groups */
+    /** Flexible priority groups */
     F_PRIORITY_GROUPS,
-    /** raw quota on schema level */
+    /** Raw quota on schema level */
     F_SCHEMA_QUOTA,
-    /** password policies and expiry */
+    /** Password policies and expiry */
     F_PASSWORD_POLICIES,
-    /** user impersonation */
+    /** User impersonation */
     F_IMPERSONATION,
     /** EXASOL-2901: System Table Snapshot Mode */
     F_SNAPSHOT_MODE,
