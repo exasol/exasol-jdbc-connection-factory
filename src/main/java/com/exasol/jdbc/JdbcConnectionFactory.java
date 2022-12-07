@@ -112,9 +112,9 @@ public static String readPassword( String prompt ) throws IOException {
 /**
  * Connect to database using given parameters.
  *
- * @param connectionString JDBC connection string. Preferably an Exasol database (null -> ENV -> localhost)
- * @param userName         user name for authentication (null -> ENV -> sys)
- * @param password         password for authentication (null -> interactive)
+ * @param connectionString JDBC connection string. Preferably an Exasol database (null -&gt; ENV -&gt; localhost)
+ * @param userName         user name for authentication (null -&gt; ENV -&gt; sys)
+ * @param password         password for authentication (null -&gt; interactive)
  * @return JDBC Connection object after successful login
  * @throws SQLException On error (connect failed, authentication error, ...)
  */
@@ -190,8 +190,8 @@ public static Connection getConnection( String connectionString, String userName
  * Connect to database using given user name and cached password.
  * If no password is cached, the user is prompted to enter one. In this case, three attempts are granted.
  *
- * @param connectionString JDBC connection string. Preferable an Exasol database (null -> ENV -> default)
- * @param userName         User name for authentication (null -> ENV -> default)
+ * @param connectionString JDBC connection string. Preferable an Exasol database (null -&gt; ENV -&gt; default)
+ * @param userName         User name for authentication (null -&gt; ENV -&gt; default)
  * @return JDBC Connection object after successful login
  * @throws SQLException When connection fails with cached password, or MAX_PASSWORD_ATTEMPTS interactive attempts failed.
  */
@@ -205,7 +205,7 @@ public static Connection getConnection( String connectionString, String userName
  * Default is 'sys' but can be overridden using environment variable "DB_USER".
  * Password will be taken from internal cache or interactively from user.
  *
- * @param connectionString JDBC Connection string, preferably to an Exasol database; (null -> ENV -> default))
+ * @param connectionString JDBC Connection string, preferably to an Exasol database; (null -&gt; ENV -&gt; default))
  * @return JDBC Connection object after successful login
  * @throws SQLException When login was not possible
  */
