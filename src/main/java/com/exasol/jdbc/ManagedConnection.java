@@ -1,8 +1,11 @@
 package com.exasol.jdbc;
 
+import java.sql.*;
+
+import org.apache.maven.artifact.versioning.ComparableVersion;
+
 import com.exasol.jdbc.functional.FunctionPreparedStatement;
 import com.exasol.jdbc.functional.FunctionResultSet;
-import org.apache.maven.artifact.versioning.ComparableVersion;
 
 /**
  * This class represents a JDBC connection with convenient helper functions.
