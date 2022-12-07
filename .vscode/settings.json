@@ -1,9 +1,9 @@
 {
-    "editor.formatOnSave": true,
+    "editor.formatOnSave": false,
     "editor.codeActionsOnSave": {
-        "source.organizeImports": true,
+        "source.organizeImports": false,
         "source.generate.finalModifiers": true,
-        "source.fixAll": true
+        "source.fixAll": false
     },
     "java.codeGeneration.useBlocks": true,
     "java.saveActions.organizeImports": true,
