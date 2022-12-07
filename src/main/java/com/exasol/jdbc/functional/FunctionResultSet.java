@@ -9,6 +9,11 @@ import java.sql.SQLException;
 @FunctionalInterface
 public interface FunctionResultSet {
 
+/**
+ * Callback function that uses the given {@link ResultSet}.
+ * @param resultSet the {@link ResultSet} to process
+ * @throws SQLException if processing fails
+ */
 void apply( ResultSet resultSet ) throws SQLException;
 
 }

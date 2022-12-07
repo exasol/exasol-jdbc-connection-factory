@@ -4,20 +4,31 @@ import com.exasol.jdbc.functional.FunctionPreparedStatement;
 import com.exasol.jdbc.functional.FunctionResultSet;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 
-import java.sql.*;
-
+/**
+ * This class represents a JDBC connection with convenient helper functions.
+ */
 public class ManagedConnection implements AutoCloseable {
 
-
+/**
+ * Features supported by an Exasol database.
+ */
 public enum Feature {
-    F_PARTITIONS // table partitions
-    , F_KERBEROS_AUTH // user authentication through Kerberos
-    , F_PRIORITY_GROUPS // flexible priority groups
-    , F_SCHEMA_QUOTA // raw quota on schema level
-    , F_PASSWORD_POLICIES // password policies and expiry
-    , F_IMPERSONATION // user impersonation
-    , F_SNAPSHOT_MODE // EXASOL-2901: System Table Snapshot Mode
-    , F_TLS_FINGERPRINT // EXASOL-2936: Fingerprint in DRIVERS
+    /** table partitions */
+    F_PARTITIONS,
+    /** user authentication through Kerberos */
+    F_KERBEROS_AUTH,
+    /** flexible priority groups */
+    F_PRIORITY_GROUPS,
+    /** raw quota on schema level */
+    F_SCHEMA_QUOTA,
+    /** password policies and expiry */
+    F_PASSWORD_POLICIES,
+    /** user impersonation */
+    F_IMPERSONATION,
+    /** EXASOL-2901: System Table Snapshot Mode */
+    F_SNAPSHOT_MODE,
+    /** EXASOL-2936: Fingerprint in DRIVERS */
+    F_TLS_FINGERPRINT
 }
 
 // the JDBC connection to be managed
