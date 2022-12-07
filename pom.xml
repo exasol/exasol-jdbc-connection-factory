@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.exasol</groupId>
-    <artifactId>jdbc-factory</artifactId>
+    <artifactId>exasol-jdbc-connection-factory</artifactId>
     <version>1.3.1</version>
     <name>Jdbc Connection Factory</name>
     <description>Simple class to create Connections to Exasol databases</description>
