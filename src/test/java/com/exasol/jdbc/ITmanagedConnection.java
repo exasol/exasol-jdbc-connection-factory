@@ -23,7 +23,7 @@ protected final ManagedConnection managedConnection;
 
 
 public ITmanagedConnection() {
-    database = new ExasolContainer<>().withRequiredServices();
+    database = new ExasolContainer<>().withRequiredServices().withReuse(true);
     database.start();
     connection = assertDoesNotThrow( () -> database.createConnection( "" ) );
     managedConnection = assertDoesNotThrow( () -> new ManagedConnection( connection ) );
