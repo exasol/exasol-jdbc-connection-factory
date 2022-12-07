@@ -1,4 +1,20 @@
 # Jdbc Factory for Exasol
+
+[![Build Status](https://github.com/exasol/exasol-jdbc-connection-factory/actions/workflows/ci-build.yml/badge.svg)](https://github.com/exasol/exasol-jdbc-connection-factory/actions/workflows/ci-build.yml)
+[![Maven Central – Jdbc Connection Factory](https://img.shields.io/maven-central/v/com.exasol/jdbc-factory)](https://search.maven.org/artifact/com.exasol/jdbc-factory)
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Ajdbc-factory&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.exasol%3Ajdbc-factory)
+
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Ajdbc-factory&metric=security_rating)](https://sonarcloud.io/dashboard?id=com.exasol%3Ajdbc-factory)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Ajdbc-factory&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=com.exasol%3Ajdbc-factory)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Ajdbc-factory&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=com.exasol%3Ajdbc-factory)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Ajdbc-factory&metric=sqale_index)](https://sonarcloud.io/dashboard?id=com.exasol%3Ajdbc-factory)
+
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Ajdbc-factory&metric=code_smells)](https://sonarcloud.io/dashboard?id=com.exasol%3Ajdbc-factory)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Ajdbc-factory&metric=coverage)](https://sonarcloud.io/dashboard?id=com.exasol%3Ajdbc-factory)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Ajdbc-factory&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=com.exasol%3Ajdbc-factory)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Ajdbc-factory&metric=ncloc)](https://sonarcloud.io/dashboard?id=com.exasol%3Ajdbc-factory)
+
 ## Abstract
 This module provides some functionality that is commonly required for projects that (interactively) connect to databases through JDBC.
 
@@ -18,7 +34,7 @@ Although not Exasol-specific in its usage, it also offers information on specifi
 ## Dependencies
 The project depends on, and includes the *Exasol JDBC Driver 6.1.0*.
 
-# Availablility
+# Availability
 The prepackaged artifact is available on the internal Exasol Artifactory; just add the following parts to your **pom.xml**
 
 ```
@@ -43,3 +59,7 @@ The prepackaged artifact is available on the internal Exasol Artifactory; just a
     </dependencies>
 ```
 
+# Information for Developers
+
+* [Dependencies](dependencies.md)
+* [Changelog](doc/changes/changelog.md)
