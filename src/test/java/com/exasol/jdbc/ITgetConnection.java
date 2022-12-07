@@ -67,7 +67,7 @@ void testBrokenURL() {
 void testNoHost() {
     ConnectFailed err = assertThrows( ConnectFailed.class, () -> JdbcConnectionFactory
             .getConnection( "jdbc:exa:www.exasol.com:8563", "sys", "exasol" ) );
-    assertEquals( "connect timed out", err.getMessage() );
+    assertEquals( "java.net.SocketTimeoutException: connect timed out", err.getMessage() );
 }
 
 @Test
