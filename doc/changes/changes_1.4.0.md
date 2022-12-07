@@ -1,12 +1,14 @@
-# Jdbc Connection Factory 1.3.1, released 2022-??-??
+# Jdbc Connection Factory 1.4.0, released 2022-12-??
 
-Code name:
+Code name: Migrate to Maven Central
 
 ## Summary
 
+This is the first release on Maven Central.
+
 ## Features
 
-* ISSUE_NUMBER: description
+* #3: Added project keeper
 
 ## Dependency Updates
 
