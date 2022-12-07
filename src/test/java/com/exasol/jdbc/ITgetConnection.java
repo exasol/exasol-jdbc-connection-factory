@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ITgetConnection {
 
-protected final ExasolContainer<? extends ExasolContainer<?>> database = new ExasolContainer<>().withRequiredServices();
+protected final ExasolContainer<? extends ExasolContainer<?>> database = new ExasolContainer<>().withRequiredServices().withReuse(true);
 
 @BeforeAll
 void startContainer() {
@@ -67,7 +67,7 @@ void testBrokenURL() {
 void testNoHost() {
     ConnectFailed err = assertThrows( ConnectFailed.class, () -> JdbcConnectionFactory
             .getConnection( "jdbc:exa:www.exasol.com:8563", "sys", "exasol" ) );
-    assertEquals( "connect timed out", err.getMessage() );
+    assertTrue( err.getMessage().contains("connect timed out") || err.getMessage().contains("connect failed") );
 }
 
 @Test

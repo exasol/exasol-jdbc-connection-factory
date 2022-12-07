@@ -1,0 +1,5 @@
+error-tags:
+  EJCF:
+    packages:
+      - com.exasol.jdbc
+    highest-index: 1

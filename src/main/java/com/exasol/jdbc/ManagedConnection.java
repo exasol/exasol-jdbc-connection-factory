@@ -1,23 +1,37 @@
 package com.exasol.jdbc;
 
-import com.exasol.jdbc.functional.FunctionPreparedStatement;
-import com.exasol.jdbc.functional.FunctionResultSet;
-import org.apache.maven.artifact.versioning.ComparableVersion;
-
 import java.sql.*;
 
+import org.apache.maven.artifact.versioning.ComparableVersion;
+
+import com.exasol.jdbc.functional.FunctionPreparedStatement;
+import com.exasol.jdbc.functional.FunctionResultSet;
+
+/**
+ * This class represents a JDBC connection with convenient helper functions.
+ */
 public class ManagedConnection implements AutoCloseable {
 
-
+/**
+ * Features supported by an Exasol database.
+ */
 public enum Feature {
-    F_PARTITIONS // table partitions
-    , F_KERBEROS_AUTH // user authentication through Kerberos
-    , F_PRIORITY_GROUPS // flexible priority groups
-    , F_SCHEMA_QUOTA // raw quota on schema level
-    , F_PASSWORD_POLICIES // password policies and expiry
-    , F_IMPERSONATION // user impersonation
-    , F_SNAPSHOT_MODE // EXASOL-2901: System Table Snapshot Mode
-    , F_TLS_FINGERPRINT // EXASOL-2936: Fingerprint in DRIVERS
+    /** Table partitions */
+    F_PARTITIONS,
+    /** User authentication through Kerberos */
+    F_KERBEROS_AUTH,
+    /** Flexible priority groups */
+    F_PRIORITY_GROUPS,
+    /** Raw quota on schema level */
+    F_SCHEMA_QUOTA,
+    /** Password policies and expiry */
+    F_PASSWORD_POLICIES,
+    /** User impersonation */
+    F_IMPERSONATION,
+    /** EXASOL-2901: System Table Snapshot Mode */
+    F_SNAPSHOT_MODE,
+    /** EXASOL-2936: Fingerprint in DRIVERS */
+    F_TLS_FINGERPRINT
 }
 
 // the JDBC connection to be managed
@@ -77,6 +91,7 @@ public long getSessionId() {
  *                While it is not forbidden for the closure to change the result sets cursor (calling next/first, ...)
  *                , it is not exactly expected.
  * @return Number of times the closure was called (should be number of result rows)
+ * @throws SQLException if executing the query fails
  */
 public long eachRow( final String sqlText, FunctionResultSet closure ) throws SQLException {
     long callCounter = 0;
@@ -101,6 +116,7 @@ public long eachRow( final String sqlText, FunctionResultSet closure ) throws SQ
  *                While it is not forbidden for the closure to change the result set cursor (calling next/first, ...)
  *                , it is not exactly expected.
  * @return Number of times the closure was called (should be number of result rows)
+ * @throws SQLException if the operation fails
  */
 public long eachRowPrepared( final String sqlText, final Object[] params, FunctionResultSet closure ) throws SQLException {
     long callCounter = 0;
@@ -214,6 +230,7 @@ public long withPrepare( final String sqlText, FunctionPreparedStatement closure
  * Set Autocommit mode of Connection
  *
  * @param mode true to enable autocommit (== default after connect)
+ * @throws SQLException if the operation fails
  */
 public void setAutocommit( boolean mode ) throws SQLException {
     m_connection.setAutoCommit( mode );
@@ -231,7 +248,8 @@ private final ComparableVersion m_dbVersion;
  * <p>
  * Note that the check is based on database version only, it can not test for specific database settings!
  * </p>
- *
+ * @param feature the feature to check
+ * @return {@code true} if the current database supports the given feature
  * @see #hasFeature(ComparableVersion, Feature)
  */
 public boolean hasFeature( Feature feature ) {
@@ -245,6 +263,8 @@ public boolean hasFeature( Feature feature ) {
  * </p>
  *
  * @param p_version Exasol Version string, eg. "6.0.8" or "6.1.rc1"
+ * @param p_feature the feature to check
+ * @return {@code true} if the database supports the given feature
  * @see #hasFeature(ComparableVersion, Feature)
  */
 public static boolean hasFeature( String p_version, Feature p_feature ) {
@@ -291,7 +311,8 @@ public static boolean hasFeature( ComparableVersion p_version, Feature p_feature
 }
 
 /**
- * Return the version of the Exasol database behind this Connection
+ * Return the version of the Exasol database behind this Connection.
+ * @return the Exasol database version
  */
 public ComparableVersion getVersion() {
     return m_dbVersion;
