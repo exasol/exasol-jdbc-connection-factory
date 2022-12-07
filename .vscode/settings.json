@@ -2,7 +2,7 @@
     "editor.formatOnSave": false,
     "editor.codeActionsOnSave": {
         "source.organizeImports": false,
-        "source.generate.finalModifiers": true,
+        "source.generate.finalModifiers": false,
         "source.fixAll": false
     },
     "java.codeGeneration.useBlocks": true,
