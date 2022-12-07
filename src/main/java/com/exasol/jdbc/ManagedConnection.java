@@ -77,6 +77,7 @@ public long getSessionId() {
  *                While it is not forbidden for the closure to change the result sets cursor (calling next/first, ...)
  *                , it is not exactly expected.
  * @return Number of times the closure was called (should be number of result rows)
+ * @throws SQLException if executing the query fails
  */
 public long eachRow( final String sqlText, FunctionResultSet closure ) throws SQLException {
     long callCounter = 0;
@@ -101,6 +102,7 @@ public long eachRow( final String sqlText, FunctionResultSet closure ) throws SQ
  *                While it is not forbidden for the closure to change the result set cursor (calling next/first, ...)
  *                , it is not exactly expected.
  * @return Number of times the closure was called (should be number of result rows)
+ * @throws SQLException if the operation fails
  */
 public long eachRowPrepared( final String sqlText, final Object[] params, FunctionResultSet closure ) throws SQLException {
     long callCounter = 0;
@@ -214,6 +216,7 @@ public long withPrepare( final String sqlText, FunctionPreparedStatement closure
  * Set Autocommit mode of Connection
  *
  * @param mode true to enable autocommit (== default after connect)
+ * @throws SQLException if the operation fails
  */
 public void setAutocommit( boolean mode ) throws SQLException {
     m_connection.setAutoCommit( mode );
@@ -231,7 +234,8 @@ private final ComparableVersion m_dbVersion;
  * <p>
  * Note that the check is based on database version only, it can not test for specific database settings!
  * </p>
- *
+ * @param feature the feature to check
+ * @return {@code true} if the current database supports the given feature
  * @see #hasFeature(ComparableVersion, Feature)
  */
 public boolean hasFeature( Feature feature ) {
@@ -245,6 +249,8 @@ public boolean hasFeature( Feature feature ) {
  * </p>
  *
  * @param p_version Exasol Version string, eg. "6.0.8" or "6.1.rc1"
+ * @param p_feature the feature to check
+ * @return {@code true} if the database supports the given feature
  * @see #hasFeature(ComparableVersion, Feature)
  */
 public static boolean hasFeature( String p_version, Feature p_feature ) {
@@ -291,7 +297,8 @@ public static boolean hasFeature( ComparableVersion p_version, Feature p_feature
 }
 
 /**
- * Return the version of the Exasol database behind this Connection
+ * Return the version of the Exasol database behind this Connection.
+ * @return the Exasol database version
  */
 public ComparableVersion getVersion() {
     return m_dbVersion;
