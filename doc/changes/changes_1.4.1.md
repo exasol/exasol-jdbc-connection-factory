@@ -1,8 +1,9 @@
-# Jdbc Connection Factory 1.4.1, released 2023-??-??
+# Jdbc Connection Factory 1.4.1, released 2023-01-18
 
 Code name: Java downgrade
 
 ## Summary
+
 To remain compatible with outdated versions of the Exasol runtime environment, the package is built for java 1.8.
 
 ## Dependency Updates

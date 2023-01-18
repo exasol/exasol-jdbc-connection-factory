@@ -4,7 +4,7 @@
 
 You need the following dependencies for building and running the tests:
 
-* Java Development Kit 11
+* Java Development Kit 8
 * Maven 3.6.3 or later
 * Docker
 
