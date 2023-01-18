@@ -45,7 +45,7 @@
 
 [0]: http://www.exasol.com
 [1]: https://docs.exasol.com/connect_exasol/drivers/jdbc.htm
-[2]: https://maven.apache.org/ref/3.8.6/maven-artifact/
+[2]: https://maven.apache.org/ref/3.8.7/maven-artifact/
 [3]: https://www.apache.org/licenses/LICENSE-2.0.txt
 [4]: https://github.com/exasol/exasol-testcontainers/
 [5]: https://github.com/exasol/exasol-testcontainers/blob/main/LICENSE
