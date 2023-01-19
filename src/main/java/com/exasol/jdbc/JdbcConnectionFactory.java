@@ -20,7 +20,9 @@ public class JdbcConnectionFactory {
 /**
  * Empty documented constructor to make Javadoc happy
  */
-public JdbcConnectionFactory() {}
+private JdbcConnectionFactory() {
+    throw new IllegalStateException("Utility class");
+}
 
 // location of integrated properties file, to read project version number
 private static final String PROPERTIES_FILE_NAME = "jdbcfactory.properties";
