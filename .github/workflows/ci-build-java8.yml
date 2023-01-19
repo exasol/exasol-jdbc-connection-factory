@@ -1,4 +1,4 @@
-name: CI Build Java 8
+name: Compile with Java 8
 
 on:
   push:
@@ -23,9 +23,9 @@ jobs:
           cache: 'maven'
       - name: Enable testcontainer reuse
         run: echo 'testcontainers.reuse.enable=true' > "$HOME/.testcontainers.properties"
-      - name: Run tests and build with Maven
+      - name: Compile with Java 8
         run: |
-          mvn --batch-mode clean test \
+          mvn --batch-mode clean compile \
               -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
               -DtrimStackTrace=false
       - name: Publish Test Report
