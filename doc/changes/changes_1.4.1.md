@@ -17,4 +17,4 @@ To remain compatible with outdated versions of the Exasol runtime environment, t
 
 * Updated `com.exasol:exasol-testcontainers:6.4.0` to `6.5.0`
 * Updated `org.junit.jupiter:junit-jupiter-api:5.9.1` to `5.9.2`
-* Updated `org.mockito:mockito-junit-jupiter:4.9.0` to `5.0.0`
+* Updated `org.mockito:mockito-junit-jupiter:4.9.0` to `3.12.4`
