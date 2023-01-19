@@ -9,7 +9,8 @@
     <url>https://github.com/exasol/exasol-jdbc-connection-factory/</url>
     <properties>
         <java.version>1.8</java.version>
-    </properties>
+        <!-- Error code crawler fails to read Java version -->
+        <error-code-crawler.skip>true</error-code-crawler.skip>    </properties>
     <dependencies>
         <!-- Exasol JDBC driver -->
         <dependency>
