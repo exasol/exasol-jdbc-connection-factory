@@ -11,7 +11,7 @@ import java.sql.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ITgetConnection {
+class ITgetConnection {
 
 protected final ExasolContainer<? extends ExasolContainer<?>> database = new ExasolContainer<>().withRequiredServices().withReuse(true);
 

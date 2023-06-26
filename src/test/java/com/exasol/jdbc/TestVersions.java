@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
-public class TestVersions {
+class TestVersions {
 
 @Mock
 private Connection connectionMock;
