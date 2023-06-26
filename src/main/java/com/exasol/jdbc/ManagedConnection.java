@@ -150,8 +150,7 @@ public long executeUpdate( final String sqlText ) throws SQLException {
     try (
             Statement stmt = m_connection.createStatement()
     ) {
-        // https://www.exasol.com/support/browse/IDEA-426 -- executeLargeUpdate is missing
-        return stmt.executeUpdate( sqlText );
+        return stmt.executeLargeUpdate( sqlText );
     }
 }
 
@@ -171,8 +170,9 @@ public long executeUpdatePrepared( final String sqlText, final Object[] params )
         for (int i = 0; i < params.length; ++i) {
             stmt.setObject( i + 1, params[i] );
         }
-        // https://www.exasol.com/support/browse/IDEA-426 -- executeLargeUpdate is missing
-        return stmt.executeUpdate();
+        // https://exasol.atlassian.net/browse/SPOT-17475 -- executeLargeUpdate is missing for prepared statements
+        stmt.executeUpdate();
+        return stmt.getLargeUpdateCount();
     }
 }
 

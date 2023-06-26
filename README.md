@@ -1,15 +1,12 @@
 # Jdbc Factory for Exasol
 
 [![Build Status](https://github.com/exasol/exasol-jdbc-connection-factory/actions/workflows/ci-build.yml/badge.svg)](https://github.com/exasol/exasol-jdbc-connection-factory/actions/workflows/ci-build.yml)
-[![Maven Central – Jdbc Connection Factory](https://img.shields.io/maven-central/v/com.exasol/exasol-jdbc-connection-factory)](https://search.maven.org/artifact/com.exasol/exasol-jdbc-connection-factory)
-
+[![Maven Central &ndash; Jdbc Connection Factory](https://img.shields.io/maven-central/v/com.exasol/exasol-jdbc-connection-factory)](https://search.maven.org/artifact/com.exasol/exasol-jdbc-connection-factory)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Aexasol-jdbc-connection-factory&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.exasol%3Aexasol-jdbc-connection-factory)
-
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Aexasol-jdbc-connection-factory&metric=security_rating)](https://sonarcloud.io/dashboard?id=com.exasol%3Aexasol-jdbc-connection-factory)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Aexasol-jdbc-connection-factory&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=com.exasol%3Aexasol-jdbc-connection-factory)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Aexasol-jdbc-connection-factory&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=com.exasol%3Aexasol-jdbc-connection-factory)
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Aexasol-jdbc-connection-factory&metric=sqale_index)](https://sonarcloud.io/dashboard?id=com.exasol%3Aexasol-jdbc-connection-factory)
-
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Aexasol-jdbc-connection-factory&metric=code_smells)](https://sonarcloud.io/dashboard?id=com.exasol%3Aexasol-jdbc-connection-factory)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Aexasol-jdbc-connection-factory&metric=coverage)](https://sonarcloud.io/dashboard?id=com.exasol%3Aexasol-jdbc-connection-factory)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Aexasol-jdbc-connection-factory&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=com.exasol%3Aexasol-jdbc-connection-factory)
