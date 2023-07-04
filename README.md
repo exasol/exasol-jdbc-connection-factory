@@ -1,7 +1,7 @@
 # Jdbc Factory for Exasol
 
 [![Build Status](https://github.com/exasol/exasol-jdbc-connection-factory/actions/workflows/ci-build.yml/badge.svg)](https://github.com/exasol/exasol-jdbc-connection-factory/actions/workflows/ci-build.yml)
-[![Maven Central – Jdbc Connection Factory](https://img.shields.io/maven-central/v/com.exasol/exasol-jdbc-connection-factory)](https://search.maven.org/artifact/com.exasol/exasol-jdbc-connection-factory)
+[![Maven Central &ndash; Jdbc Connection Factory](https://img.shields.io/maven-central/v/com.exasol/exasol-jdbc-connection-factory)](https://search.maven.org/artifact/com.exasol/exasol-jdbc-connection-factory)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Aexasol-jdbc-connection-factory&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.exasol%3Aexasol-jdbc-connection-factory)
 

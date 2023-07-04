@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ITmanagedConnection {
+class ITmanagedConnection {
 
 protected final ExasolContainer<? extends ExasolContainer<?>> database;
 protected final Connection connection;
