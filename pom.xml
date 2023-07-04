@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.exasol</groupId>
     <artifactId>exasol-jdbc-connection-factory</artifactId>
-    <version>1.4.1</version>
+    <version>1.4.2</version>
     <name>Jdbc Connection Factory</name>
     <description>Simple class to create Connections to Exasol databases</description>
     <url>https://github.com/exasol/exasol-jdbc-connection-factory/</url>
@@ -62,7 +62,7 @@
     <parent>
         <artifactId>exasol-jdbc-connection-factory-generated-parent</artifactId>
         <groupId>com.exasol</groupId>
-        <version>1.4.1</version>
+        <version>1.4.2</version>
         <relativePath>pk_generated_parent.pom</relativePath>
     </parent>
 </project>
