@@ -1,4 +1,4 @@
-# Jdbc Connection Factory 1.4.1, released 2023-??-??
+# Jdbc Connection Factory 1.4.1, released 2023-07-04
 
 Code name: long is long
 
@@ -20,7 +20,8 @@ Code name: long is long
 ### Test Dependency Updates
 
 * Updated `com.exasol:exasol-testcontainers:6.4.0` to `6.6.0`
-* Updated `org.junit.jupiter:junit-jupiter-api:5.9.1` to `5.9.3`
+* Removed `org.junit.jupiter:junit-jupiter-api:5.9.1`
+* Added `org.junit.jupiter:junit-jupiter:5.9.3`
 * Updated `org.mockito:mockito-junit-jupiter:4.9.0` to `5.4.0`
 
 ### Plugin Dependency Updates

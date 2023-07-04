@@ -13,7 +13,7 @@
 | Dependency                                | License                          |
 | ----------------------------------------- | -------------------------------- |
 | [Test containers for Exasol on Docker][4] | [MIT License][5]                 |
-| [JUnit Jupiter API][6]                    | [Eclipse Public License v2.0][7] |
+| [JUnit Jupiter (Aggregator)][6]           | [Eclipse Public License v2.0][7] |
 | [mockito-junit-jupiter][8]                | [The MIT License][9]             |
 
 ## Plugin Dependencies
