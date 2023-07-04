@@ -15,7 +15,7 @@ Code name: long is long
 ### Compile Dependency Updates
 
 * Updated `com.exasol:exasol-jdbc:7.1.16` to `7.1.20`
-* Updated `org.apache.maven:maven-artifact:3.8.6` to `3.9.2`
+* Updated `org.apache.maven:maven-artifact:3.8.6` to `3.9.3`
 
 ### Test Dependency Updates
 

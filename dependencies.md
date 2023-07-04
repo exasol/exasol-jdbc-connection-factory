@@ -46,7 +46,7 @@
 
 [0]: http://www.exasol.com
 [1]: https://repo1.maven.org/maven2/com/exasol/exasol-jdbc/7.1.20/exasol-jdbc-7.1.20-license.txt
-[2]: https://maven.apache.org/ref/3.9.2/maven-artifact/
+[2]: https://maven.apache.org/ref/3.9.3/maven-artifact/
 [3]: https://www.apache.org/licenses/LICENSE-2.0.txt
 [4]: https://github.com/exasol/exasol-testcontainers/
 [5]: https://github.com/exasol/exasol-testcontainers/blob/main/LICENSE
