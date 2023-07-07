@@ -1,14 +1,12 @@
 package com.exasol.jdbc;
 
-import com.exasol.containers.ExasolContainer;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.*;
+
+import com.exasol.containers.ExasolContainer;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ITgetConnection {
@@ -67,7 +65,8 @@ void testBrokenURL() {
 void testNoHost() {
     ConnectFailed err = assertThrows( ConnectFailed.class, () -> JdbcConnectionFactory
             .getConnection( "jdbc:exa:www.exasol.com:8563", "sys", "exasol" ) );
-    assertTrue( err.getMessage().contains("connect timed out") || err.getMessage().contains("connect failed") );
+    String message = err.getMessage().toLowerCase();
+    assertTrue(message.contains("connect timed out") || message.contains("connect failed"), "Got wrong error message: '"+err.getMessage() +"'");
 }
 
 @Test
