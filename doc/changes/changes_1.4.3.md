@@ -15,7 +15,7 @@ This release publishes a JAR for Java 8 to Maven Central
 
 ### Test Dependency Updates
 
-* Updated `com.exasol:exasol-testcontainers:6.4.0` to `6.6.0`
+* Updated `com.exasol:exasol-testcontainers:6.4.0` to `6.6.1`
 * Removed `org.junit.jupiter:junit-jupiter-api:5.9.1`
 * Added `org.junit.jupiter:junit-jupiter:5.9.3`
 * Updated `org.mockito:mockito-junit-jupiter:4.9.0` to `5.4.0`
