@@ -18,6 +18,13 @@
 ## Abstract
 This module provides some functionality that is commonly required for projects that (interactively) connect to databases through JDBC.
 
+> [!IMPORTANT]
+> This project has been archived as of June 19th, 2026 and is no longer supported.
+>
+> If you are interested in the project please contact Exasol via our
+> [Community Forum](https://community.exasol.com/),
+> submit a [support request](https://exasol.my.site.com/s/create-new-case) or engage directly with your account team.
+
 ## Service Classes
 
 ### JdbcConnectionFactory
